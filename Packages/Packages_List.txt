@@ -1,0 +1,6 @@
+This directory contains VHDL based PACKAGES that:
+  • Have been found to be of repeated use across multiple designs.
+
+The following is a list of the VHDL based PACKAGES within this directory:
+
+  • D_D_pkg.vhd
