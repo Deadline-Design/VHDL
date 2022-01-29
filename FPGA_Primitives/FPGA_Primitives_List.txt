@@ -1,10 +1,10 @@
-This directory contains VHDL based FPGA primitives that are:
-  • Inferrable.
+This directory contains VHDL based FPGA primitives that:
+  • Are inferrable.
   • Have been found to be of repeated use across multiple designs.
 
-A FPGA primitive, can be FPGA vendor specific and/or FPGA family specific and so may possibly not be usable depending upon the target FPGA.
+A VHDL based FPGA primitive, can be FPGA vendor specific and/or FPGA family specific and so may possibly not be usable depending upon the target FPGA.
 
-The following is a list of the FPGA Primitives within this directory:
+The following is a list of the VHDL based FPGA Primitives within this directory:
 
   • SRLE.vhd - Xilinx, LUT based shift register with dynamic shift output tap.
   • SRLCE.vhd - Xilinx, LUT based shift register with dynamic shift output tap AND max-depth output tap (typically utilized for cascading).
