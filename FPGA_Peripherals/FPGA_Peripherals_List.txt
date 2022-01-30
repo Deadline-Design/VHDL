@@ -1,0 +1,11 @@
+This directory contains VHDL based FPGA peripherals that:
+  • Are inferrable.
+  • Have been found to be of repeated use across multiple designs.
+
+A VHDL based FPGA peripheral, can be FPGA vendor specific and/or FPGA family specific and so may possibly not be usable depending upon the target FPGA.
+
+Each FPGA Peripheral is in its own sub-directory. Further each FPGA Peripheral may utilize one or more FPGA primitives or FPGA packages.
+The following is a list of the VHDL based FPGA Peripherals within this directory:
+
+  • /Pre-scaler/ - Xilinx, LUT based shift register pre-scaler with dynamic shift output tap.
+ 
