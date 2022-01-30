@@ -1,1 +1,11 @@
+This directory contains VHDL based clock pre-scaling function(s).
 
+A VHDL based FPGA peripheral, can be FPGA vendor specific and/or FPGA family specific and so may possibly not be usable depending upon the target FPGA.
+
+The following is a list of the VHDL based clock pre-scaling function files within this directory:
+
+  • pre_scaler_srle_based.vhd - Xilinx, LUT based shift register pre-scaler with dynamic shift output tap.
+                              - Generates a one-clock wide pulse/tick synchronous to the input clock and at
+                                a rate based upon the desired dividing factor.
+                              - Inferrable.
+  • pre_scaler_srle_based_TSTR.vhd - Simple testbench for pre_scaler_srle_based.vhd design unit.
