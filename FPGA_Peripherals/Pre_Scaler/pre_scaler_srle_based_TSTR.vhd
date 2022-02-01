@@ -1,5 +1,7 @@
 ------------------------------------------------------------------------------------------------
+--                                   WWW.DEADLINE-DESIGN.COM                                  --
 ------------------------------------------------------------------------------------------------
+--                                                                                            --
 -- This software representation and its inclusive documentation are provided AS-IS and with   --
 -- all faults; is without warranty expressed or implied, including but not limited to,        --
 -- warranties of merchantability or fitness for a particular purpose.                         --
@@ -38,14 +40,16 @@
 ------------------------------------------------------------------------------------------------
 --                                                                                            --
 -- VERSION  AUTHOR     DATE       COMMENTS                                                    --
---   0.0     D-D     30 Jan 22    Created.                                                    --
+--   0.0     D-D     30 Jan 22    - Created.                                                  --
+--                                                                                            --
+--           D-D     01 Feb 22    - Incorporated revised pre_scaler_srle_based(dynamic)       --
+--                                  COMPONENT.                                                -- 
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 --                                    LIBRARY UTILIZATION(S)                                  --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
-
   LIBRARY IEEE;
   USE IEEE.STD_LOGIC_1164.ALL;
   USE IEEE.STD_LOGIC_UNSIGNED.ALL;
@@ -53,13 +57,11 @@
   LIBRARY DEADLINE;
   USE DEADLINE.ALL;
   USE DEADLINE.D_D_pkg.ALL;
-
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 --                                  ENTITY and ARCHITECTURE(S)                                --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
-
 ENTITY pre_scaler_srle_based_TSTR IS
 END pre_scaler_srle_based_TSTR;
 
@@ -69,7 +71,8 @@ ARCHITECTURE testbench1 OF pre_scaler_srle_based_TSTR IS
   ------------------------------
   COMPONENT pre_scaler_srle_based IS
   GENERIC (
-           PRE_SCALE_SRL_DEPTH : INTEGER := 16
+           PRE_SCALE_SRL_DEPTH : INTEGER := 16;
+           PRE_SCALE_SRL_INIT  : STRING  := SRLEn_gen_hex_INIT_string('0',16)
             );
   PORT    (
            i_clock               : IN  STD_LOGIC;
@@ -122,7 +125,8 @@ BEGIN
 --                                  PRE-SCALER MODULES UNDER TEST                             --
 ------------------------------------------------------------------------------------------------
   PRESCALEUT: pre_scaler_srle_based GENERIC MAP (
-                                                 pre_scale_srl_depth => SRLE16_MAX_DEPTH
+                                                 PRE_SCALE_SRL_DEPTH => SRLE16_MAX_DEPTH,
+                                                 PRE_SCALE_SRL_INIT  => SRLEn_gen_hex_INIT_string('0',SRLE16_MAX_DEPTH)
                                                 )
                                        PORT MAP (
                                                  i_clock               => sys_clock,
