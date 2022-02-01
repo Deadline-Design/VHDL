@@ -1,5 +1,7 @@
 ------------------------------------------------------------------------------------------------
+--                                   WWW.DEADLINE-DESIGN.COM                                  --
 ------------------------------------------------------------------------------------------------
+--                                                                                            --
 -- This software representation and its inclusive documentation are provided AS-IS and with   --
 -- all faults; is without warranty expressed or implied, including but not limited to,        --
 -- warranties of merchantability or fitness for a particular purpose.                         --
@@ -35,6 +37,8 @@
 --                                        primitive instantion. However a multiple of 16      --
 --                                        that is greater than 32 is possible.                --
 --                                                                                            --
+--                  PRE_SCALE_SRL_INIT  - Pre-scale LUT based SRL initialization string.      --
+--                                                                                            --
 --                                      PORT DECLARATIONS                                     --
 --                                                                                            --
 --                  i_clock               - Global clock input.                               --
@@ -59,6 +63,9 @@
 --                  flush the SRL LUT shift register using i_enable, prior to making the      --
 --                  change and re-asserting i_enable.                                         --
 --                                                                                            --
+--                  Ensure that the PRE_SCALE_SRL_DEPTH GENERIC value is a multiple of 16 so  --
+--                  that it is compatible with SRL LUT based shift register depths.           --
+--                                                                                            --
 -- ERRORS         : No known errors.                                                          --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
@@ -68,14 +75,15 @@
 ------------------------------------------------------------------------------------------------
 --                                                                                            --
 -- VERSION  AUTHOR     DATE       COMMENTS                                                    --
---   0.0     D-D     30 Jan 22    Created.                                                    --
+--   0.0     D-D     30 Jan 22    - Created.                                                  --
+--                                                                                            --
+--           D-D     01 Feb 22    - Incorporated revised srle(dynamic) COMPONENT.             --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 --                                    LIBRARY UTILIZATION(S)                                  --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
-
   LIBRARY IEEE;
   USE IEEE.STD_LOGIC_1164.ALL;
 
@@ -87,10 +95,10 @@
 --                                  ENTITY and ARCHITECTURE(S)                                --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
-
 ENTITY pre_scaler_srle_based IS
 GENERIC (
-         PRE_SCALE_SRL_DEPTH : INTEGER := 16
+         PRE_SCALE_SRL_DEPTH : INTEGER := 16;
+         PRE_SCALE_SRL_INIT  : STRING  := SRLEn_gen_hex_INIT_string('0',16)
         );
 PORT    (
          i_clock               : IN  STD_LOGIC;
@@ -100,9 +108,6 @@ PORT    (
         );
 END pre_scaler_srle_based;
 
-------------------------------------------------------------------------------------------------
---                                       VER1 ARCHITECTURE                                    --
-------------------------------------------------------------------------------------------------
 ARCHITECTURE dynamic OF pre_scaler_srle_based IS
   ------------------------------
   -- COMPONENT DECLARATION(S) --
@@ -112,7 +117,7 @@ ARCHITECTURE dynamic OF pre_scaler_srle_based IS
            CLOCK_POL_RISING : BOOLEAN := TRUE;
            SRLDEPTH         : INTEGER := 16;
            SRLTYPE          : STRING  := "srl";
-           SRLINIT          : INTEGER := 0
+           SRLINIT          : STRING  := "0000"
           );
   PORT    (
            i_clock        : IN  STD_LOGIC;
@@ -131,9 +136,10 @@ ARCHITECTURE dynamic OF pre_scaler_srle_based IS
   SIGNAL enable_dly          : STD_LOGIC; -- Pre-scaler enable delay
   SIGNAL srl_pre_scale       : STD_LOGIC; -- Pre-scaler SRL output
   SIGNAL srl_pre_scale_token : STD_LOGIC; -- Pre-scaler SRL input token
-  
+  ----------------
+  -- ATTRIBUTES --
+  ----------------
 BEGIN
-
 ------------------------------------------------------------------------------------------------
 --                                PRE-SCALER RATE GENERATION                                  --
 ------------------------------------------------------------------------------------------------
@@ -192,7 +198,7 @@ BEGIN
                                  CLOCK_POL_RISING => TRUE,
                                  SRLDEPTH         => PRE_SCALE_SRL_DEPTH,
                                  SRLTYPE          => "srl",
-                                 SRLINIT          => 0
+                                 SRLINIT          => PRE_SCALE_SRL_INIT
                                 )
                        PORT MAP (
                                  i_clock        => i_clock,
