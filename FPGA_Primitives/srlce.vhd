@@ -19,6 +19,8 @@
 -- NOTE         : LUT based shift register primitives can be found in various Xilinx FPGA     --
 --                families.                                                                   --
 --                                                                                            --
+--                LUT based shift registers shift in LSb first.                               --
+--                                                                                            --
 --                The design unit is based from a similar example design unit in the Xilinx   --
 --                User Guide, UG901, "Vivado Design Suite User Guide Synthesis".              --
 --                                                                                            --
@@ -35,13 +37,11 @@
 --                                                                                            --
 --                SRLTYPE          - SRL arrangement. SRL, REG->SRL, SRL->REG, REG->SRL->REG. --
 --                                                                                            --
---                SRLINIT          - Initial value of SRL shift register. Typically all 0.    --
---                                   This emulates the initial value loaded during FPGA       --
---                                   configuration. It also helps avoid the all 'U's initial  --
---                                   state for simulation that would otherwise occur with     --
---                                   an unitialized SRL shift register.                       --
+--                SRLINIT          - (hex) string of values to initialize SRL with.           --
 --                                                                                            --
 --                                      PORT DECLARATIONS                                     --
+--                                                                                            --
+--                c_srle_INIT    - SRL INITIAL value input (used as a CONSTANT).              --
 --                                                                                            --
 --                i_clock        - Global clock input.                                        --
 --                                                                                            --
@@ -81,22 +81,34 @@
 ------------------------------------------------------------------------------------------------
 --                                                                                            --
 -- VERSION  AUTHOR     DATE       COMMENTS                                                    --
---   0.0     D-D     29 Jan 22    Created.                                                    --
+--   0.0     D-D     29 Jan 22    - Created.                                                  --
+--                                                                                            --
+--           D-D     01 Feb 22    - Changed SRLINIT GENERIC from INTEGER to STRING. The       --
+--                                  maximum INTEGER supported by VHDL is 2^31-1 and makes it  --
+--                                  unsuitable for some cases. A string of values gets        --
+--                                  converted and utilized instead for the initial value of   --
+--                                  the LUT based shift register.                             --
+--                                - Added an INIT ATTRIBUTE to the LUT based shift register   --
+--                                  LABEL. This permits the tools to recognize the desired    --
+--                                  initial value during synthesis & implementation.          --
+--                                - Changed the valid depth check ASSERT statement to simply  --
+--                                  check depth is a multiple of 16.                          --
+--                                - Added a valid INIT string size check                      --
+--                                  (to equal SRL DEPTH X 4) ASSERT statement.                -- 
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 --                                    LIBRARY UTILIZATION                                     --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
-
   LIBRARY IEEE;
   USE IEEE.STD_LOGIC_1164.ALL;
   USE IEEE.STD_LOGIC_ARITH.ALL;
   USE IEEE.STD_LOGIC_UNSIGNED.ALL;
   
   LIBRARY DEADLINE;
+  USE DEADLINE.ALL;
   USE DEADLINE.D_D_pkg.ALL;
-
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 --                                  ENTITY and ARCHITECTURE(S)                                --
@@ -108,7 +120,7 @@ GENERIC (
          CLOCK_POL_RISING : BOOLEAN := TRUE;
          SRLDEPTH         : INTEGER := 16;
          SRLTYPE          : STRING  := "srl";
-         SRLINIT          : INTEGER := 0
+         SRLINIT          : STRING  := "0000"
         );
 PORT    (
          i_clock        : IN  STD_LOGIC;
@@ -128,13 +140,20 @@ ARCHITECTURE dynamic OF srlce IS
   -------------
   -- SIGNALS --
   -------------
-  SIGNAL srl_shift_register : STD_LOGIC_VECTOR((DEPTH-1) DOWNTO 0) := CONV_STD_LOGIC_VECTOR(SRLINIT,SRLDEPTH);
+  SIGNAL srl_shift_register : STD_LOGIC_VECTOR((DEPTH-1) DOWNTO 0) hex_string_to_std_logic_vector(SRLINIT,SRLDEPTH);
   ----------------
   -- ATTRIBUTES --
   ----------------
   ATTRIBUTE SHREG_EXTRACT OF srl_shift_register : SIGNAL IS "yes";
   ATTRIBUTE SRL_STYLE OF srl_shift_register     : SIGNAL IS SRLTYPE;
+  ATTRIBUTE INIT OF DYNAMICSRL                  : LABEL IS  SRLINIT;
 BEGIN
+  ----------------------------------
+  -- VALID INIT STRING SIZE CHECK --
+  ----------------------------------
+  ASSERT (SRLINIT'HIGH = (SRLDEPTH*4))
+  REPORT "SRL INIT STRING LENGTH DOES NOT MATCH SRL DEPTH X 4"
+  SEVERITY FAILURE;
   -----------------------
   -- VALID DEPTH CHECK --
   -----------------------
@@ -147,12 +166,6 @@ BEGIN
   ASSERT ((SRLTYPE = "srl") OR (SRLTYPE = "reg_srl_reg") OR
           (SRLTYPE = "reg_srl") OR (SRLTYPE = "srl_reg"))
   REPORT "INVALID SRL STYLE"
-  SEVERITY FAILURE;
-  --------------------------
-  -- VALID SRL INIT CHECK --
-  --------------------------
-  ASSERT ((SRLINIT >= 0) AND (SRLINIT < ((2**SRLDEPTH)-1)))
-  REPORT "INVALID SRL INITIALIZATION VALUE"
   SEVERITY FAILURE;
   ----------------------
   -- SHIFT TAP OUTPUT --
