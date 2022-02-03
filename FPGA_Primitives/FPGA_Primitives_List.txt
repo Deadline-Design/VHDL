@@ -8,3 +8,5 @@ The following is a list of the VHDL based FPGA Primitives within this directory:
 
   • SRLE.vhd - Xilinx, LUT based shift register with dynamic shift output tap.
   • SRLCE.vhd - Xilinx, LUT based shift register with dynamic shift output tap AND max-depth output tap (typically utilized for cascading).
+  • SYM_BRAM.vhd - Xilinx, BRAM, symetric data widths, dual ported.
+  • ASYM_BRAM.vhd - Xilinx, BRAM, asymetric data widths, dual ported.
