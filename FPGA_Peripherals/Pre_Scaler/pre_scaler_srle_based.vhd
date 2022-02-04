@@ -37,8 +37,6 @@
 --                                        primitive instantion. However a multiple of 16      --
 --                                        that is greater than 32 is possible.                --
 --                                                                                            --
---                  PRE_SCALE_SRL_INIT  - Pre-scale LUT based SRL initialization string.      --
---                                                                                            --
 --                                      PORT DECLARATIONS                                     --
 --                                                                                            --
 --                  i_clock               - Global clock input.                               --
@@ -79,6 +77,8 @@
 --                                                                                            --
 --           D-D     01 Feb 22    - Incorporated revised srle(dynamic) COMPONENT.             --
 --                                                                                            --
+--           D-D     04 Feb 22    - Changed PRE_SCALE_SRL_INIT GENERIC to a local CONSTANT.   --
+--                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 --                                    LIBRARY UTILIZATION(S)                                  --
@@ -97,8 +97,7 @@
 ------------------------------------------------------------------------------------------------
 ENTITY pre_scaler_srle_based IS
 GENERIC (
-         PRE_SCALE_SRL_DEPTH : INTEGER := 16;
-         PRE_SCALE_SRL_INIT  : STRING  := SRLEn_gen_hex_INIT_string('0',16)
+         PRE_SCALE_SRL_DEPTH : INTEGER := 16
         );
 PORT    (
          i_clock               : IN  STD_LOGIC;
@@ -130,6 +129,7 @@ ARCHITECTURE dynamic OF pre_scaler_srle_based IS
   ---------------
   -- CONSTANTS --
   ---------------
+  CONSTANT PRE_SCALE_SRL_INIT  : STRING  := SRLEn_gen_hex_INIT_string('0',PRE_SCALE_SRL_DEPTH);
   -------------
   -- SIGNALS --
   -------------

@@ -43,6 +43,9 @@
 --   0.0     D-D     30 Jan 22    - Created.                                                  --
 --                                                                                            --
 --           D-D     01 Feb 22    - Incorporated revised pre_scaler_srle_based(dynamic)       --
+--                                  COMPONENT.                                                --
+--                                                                                            --
+--           D-D     04 Feb 22    - Incorporated revised pre_scaler_srle_based(dynamic)       --
 --                                  COMPONENT.                                                -- 
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
@@ -71,8 +74,7 @@ ARCHITECTURE testbench1 OF pre_scaler_srle_based_TSTR IS
   ------------------------------
   COMPONENT pre_scaler_srle_based IS
   GENERIC (
-           PRE_SCALE_SRL_DEPTH : INTEGER := 16;
-           PRE_SCALE_SRL_INIT  : STRING  := SRLEn_gen_hex_INIT_string('0',16)
+           PRE_SCALE_SRL_DEPTH : INTEGER := 16
             );
   PORT    (
            i_clock               : IN  STD_LOGIC;
@@ -125,8 +127,7 @@ BEGIN
 --                                  PRE-SCALER MODULES UNDER TEST                             --
 ------------------------------------------------------------------------------------------------
   PRESCALEUT: pre_scaler_srle_based GENERIC MAP (
-                                                 PRE_SCALE_SRL_DEPTH => SRLE16_MAX_DEPTH,
-                                                 PRE_SCALE_SRL_INIT  => SRLEn_gen_hex_INIT_string('0',SRLE16_MAX_DEPTH)
+                                                 PRE_SCALE_SRL_DEPTH => SRLE16_MAX_DEPTH
                                                 )
                                        PORT MAP (
                                                  i_clock               => sys_clock,
