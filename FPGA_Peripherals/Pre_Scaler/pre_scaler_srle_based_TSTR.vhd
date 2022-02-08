@@ -46,7 +46,10 @@
 --                                  COMPONENT.                                                --
 --                                                                                            --
 --           D-D     04 Feb 22    - Incorporated revised pre_scaler_srle_based(dynamic)       --
---                                  COMPONENT.                                                -- 
+--                                  COMPONENT.                                                --
+--                                                                                            --
+--           D-D     08 Feb 22    - Removed extra space character outside of right -- in      --
+--                                  titleblock.                                               --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
