@@ -10,7 +10,7 @@
 --                                                                                            --
 -- DESIGN UNITS : pre_scaler_srle_based(dynamic)                                              --
 --                                                                                            --
--- FILE NAME    : pre_scaler_srle_based_.vhd                                                  --
+-- FILE NAME    : pre_scaler_srle_based.vhd                                                   --
 --                                                                                            --
 -- PURPOSE      : The purpose of this design unit is to provide a minimal footprint yet       --
 --                somewhat flexible multi-use clock enable tick based clock pre-scaler.       --
@@ -78,6 +78,8 @@
 --           D-D     01 Feb 22    - Incorporated revised srle(dynamic) COMPONENT.             --
 --                                                                                            --
 --           D-D     04 Feb 22    - Changed PRE_SCALE_SRL_INIT GENERIC to a local CONSTANT.   --
+--                                                                                            --
+--           D-D     08 Feb 22    - Corrected typo in titleblock.                             --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
