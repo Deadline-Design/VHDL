@@ -94,7 +94,10 @@
 --                                - Changed the valid depth check ASSERT statement to simply  --
 --                                  check depth is a multiple of 16.                          --
 --                                - Added a valid INIT string size check                      --
---                                  (to equal SRL DEPTH X 4) ASSERT statement.                -- 
+--                                  (to equal SRL DEPTH X 4) ASSERT statement.                --
+--                                                                                            --
+--           D-D      08 Feb 22   - Corrected valid init string size check REPORT, X 4 should --
+--                                  be on the init string.                                    --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
@@ -152,7 +155,7 @@ BEGIN
   -- VALID INIT STRING SIZE CHECK --
   ----------------------------------
   ASSERT (SRLINIT'HIGH = (SRLDEPTH*4))
-  REPORT "SRL INIT STRING LENGTH DOES NOT MATCH SRL DEPTH X 4"
+  REPORT "SRL INIT STRING LENGTH X 4 DOES NOT MATCH SRL DEPTH"
   SEVERITY FAILURE;
   -----------------------
   -- VALID DEPTH CHECK --
