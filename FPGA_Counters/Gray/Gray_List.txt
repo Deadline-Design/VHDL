@@ -1,0 +1,10 @@
+This directory contains VHDL based Gray counter function(s).
+
+A VHDL based FPGA counter, can be FPGA vendor specific and/or FPGA family specific and so may possibly not be usable depending upon the target FPGA.
+
+The following is a list of the VHDL based Gray counter function files within this directory:
+
+  • gray_counter.vhd - Any Vendor, General purpose Gray counter.
+                              - Generates a Gray count that auto rolls over (aka repeats).
+                              - Inferrable.
+  • gray_counter_TSTR.vhd - Simple testbench for gray_counter.vhd design unit.
