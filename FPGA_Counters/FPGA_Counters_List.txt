@@ -1,0 +1,10 @@
+This directory contains VHDL based FPGA counters that:
+  • Are inferrable.
+  • Have been found to be of repeated use across multiple designs.
+
+A VHDL based FPGA counter, can be FPGA vendor specific and/or FPGA family specific and so may possibly not be usable depending upon the target FPGA.
+
+Each FPGA Counter is in its own sub-directory. Further each FPGA Counter may utilize one or more FPGA primitives or FPGA packages.
+The following is a list of the VHDL based FPGA Counter within this directory:
+
+  • /Gray/ - Any Vendor, General purpose gray counter.
