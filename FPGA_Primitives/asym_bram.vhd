@@ -31,16 +31,16 @@
 --                                     GENERIC DECLARATIONS                                   --
 --                                                                                            --
 --                WIDTHA         - A-SIDE data I/O width selection.                           --
---                                 1,2,4,8,16,32 supported.                                   --
+--                                 1,2,4,8,16,32 supported. WIDTHA must always be <= WIDTHB.  --
 --                                                                                            --
 --                DEPTHA         - A-SIDE memory depth selection.                             --
---                                 DEPTHA x WIDTHA.                                           --
+--                                 DEPTHA must always be >= DEPTHB.                           --
 --                                                                                            --
 --                WIDTHB         - B-SIDE data I/O width selection.                           --
---                                 1,2,4,8,16,32 supported.                                   --
+--                                 1,2,4,8,16,32 supported. WIDTHA must always be <= WIDTHB.  --
 --                                                                                            --
 --                DEPTHB         - B-SIDE memory depth selection.                             --
---                                 DEPTHB x WIDTHB.                                           --
+--                                 DEPTHA must always be >= DEPTHB.                           --
 --                                                                                            --
 --                USES_OUTREG    - Output register on data outputs selection.                 --
 --                                                                                            --
@@ -95,6 +95,11 @@
 --                also be synchronously reset. An asynchronous reset source will generate a   --
 --                warning during the implementation phase for Xilinx targets.                 --
 --                                                                                            --
+--                The shared memory is created based upon the port with minimum width and     --
+--                maximum depth. Due to this, and the manner in which the BRAM is inferred,   --
+--                the A-side MUST be the side with minimum width and maximum depth. Doing     --
+--                otherwise will produce a synthese failure because of mismatched port widths.--
+--                                                                                            --
 -- ERRORS       : No known errors.                                                            --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
@@ -114,6 +119,13 @@
 --                                                                                            --
 --           D-D     02 Feb 22    - Added synchronous reset capability to port output         --
 --                                  registers (when utilized).                                --
+--                                                                                            --
+--           D-D     12 Oct 22    - Identified a limitation for which a work-around or        --
+--                                  change/modification was not found despite multiple        --
+--                                  attempts (synthesis would fail reporting an invalid BRAM  --
+--                                  description/inference. DEPTH A MUST always be >= DEPTH B  --
+--                                  and WIDTH A MUST always be <= WIDTH B. An assertion is    --
+--                                  being added to catch this and fail if it is not the case. --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
@@ -250,6 +262,12 @@ BEGIN
   --------------------------------------------
   ASSERT (((maxDEPTH = DEPTHA) AND (minWIDTH = WIDTHA)) OR ((maxDEPTH = DEPTHB) AND (minWIDTH = WIDTHB)))
   REPORT "minWIDTH DOES NOT CORRESPOND TO SIDE THAT IS maxDEPTH"
+  SEVERITY FAILURE;
+  -------------------------------------------------------
+  -- minWIDTH and maxDEPTH CORRESPONDS TO A-SIDE CHECK --
+  -------------------------------------------------------
+  ASSERT ((maxDEPTH = DEPTHA) AND (minWIDTH = WIDTHA))
+  REPORT "minWIDTH AND maxDEPTH DO NOT CORRESPOND TO A-SIDE"
   SEVERITY FAILURE;
   -----------------------------------------------------------
   -- SYNCHRONOUS OUTPUT WITH NO ADDITIONAL OUTPUT REGISTER --
