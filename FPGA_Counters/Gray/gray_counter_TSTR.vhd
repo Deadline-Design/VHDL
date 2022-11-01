@@ -1,5 +1,6 @@
 ------------------------------------------------------------------------------------------------
---                                   WWW.DEADLINE-DESIGN.COM                                  --
+--                                        DEADLINE-DESIGN                                     --
+--                                    www.deadline-design.com                                 --
 ------------------------------------------------------------------------------------------------
 --                                                                                            --
 -- This software representation and its inclusive documentation are provided AS-IS and with   --
@@ -7,6 +8,8 @@
 -- warranties of merchantability or fitness for a particular purpose.                         --
 --                                                                                            --
 -- All trademarks are the property of their respective owners.                                --
+--                                                                                            --
+-- CONTACT      : support@deadline-design.com                                                 --
 --                                                                                            --
 -- DESIGN UNITS : gray_counter_TSTR(testbench1)                                               --
 --                                                                                            --
@@ -30,9 +33,15 @@
 --                DEADLINE LIBRARY prior to compiling this testbench into the                 --
 --                DEADLINE LIBRARY.                                                           --
 --                                                                                            --
--- LIMITATIONS    : N/A.                                                                      --
+-- LIMITATIONS  : N/A.                                                                        --
 --                                                                                            --
--- ERRORS         : No known errors.                                                          --
+-- ERRORS       : No known errors.                                                            --
+--                                                                                            --
+-- GENERIC                                                                                    --
+-- DECLARATIONS : N/A.                                                                        --
+--                                                                                            --
+-- PORT                                                                                       --
+-- DECLARATIONS : N/A.                                                                        --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
@@ -42,6 +51,9 @@
 --                                                                                            --
 -- VERSION  AUTHOR     DATE       COMMENTS                                                    --
 --   0.0     D-D     09 Feb 22    - Created.                                                  --
+--                                                                                            --
+--           D-D     01 Nov 22    - Titleblock refinements.                                   --
+--                                - Adjustments to accommodate revised gray_counter COMPONENT.--
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
@@ -68,8 +80,8 @@ ARCHITECTURE testbench1 OF gray_counter_TSTR IS
   ------------------------------
   COMPONENT gray_counter IS
   GENERIC (
-           CLOCK_POL_RISING : BOOLEAN := TRUE;
-           WIDTH            : INTEGER := 2
+           CLOCK_POLARITY : STD_LOGIC := '1';
+           WIDTH          : INTEGER := 2
           );
   PORT    (
            i_reset        : IN  STD_LOGIC;
@@ -128,8 +140,8 @@ BEGIN
 --                                  GRAY COUNTER MODULES UNDER TEST                           --
 ------------------------------------------------------------------------------------------------
   GRAYCNTUT: gray_counter GENERIC MAP (
-                                       CLOCK_POL_RISING => TRUE,
-                                       WIDTH            => GRAY_COUNTER_WIDTH
+                                       CLOCK_POLARITY => '1',
+                                       WIDTH          => GRAY_COUNTER_WIDTH
                                       )
                              PORT MAP (
                                        i_reset        => sys_reset,
