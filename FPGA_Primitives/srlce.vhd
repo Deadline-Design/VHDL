@@ -58,7 +58,7 @@
 -- GENERIC                                                                                    --
 -- DECLARATIONS :                                                                             --
 --                                                                                            --
---                CLOCK_POL_RISING - Clock polarity rising (TRUE) or falling (FALSE).         --
+--                CLOCK_POLARITY   - Selector '1'(RISING)/'0'(FALLING) for clock polarity.    --
 --                                                                                            --
 --                SRLDEPTH         - SRL (maximum) depth. 16 or 32 supported.                 --
 --                                                                                            --
@@ -68,8 +68,6 @@
 --                                                                                            --
 -- PORT                                                                                       --
 -- DECLARATIONS :                                                                             --
---                                                                                            --
---                c_srle_INIT    - SRL INITIAL value (used as a CONSTANT).                    --
 --                                                                                            --
 --                i_clock        - Global clock.                                              --
 --                                                                                            --
@@ -113,6 +111,10 @@
 --                                                                                            --
 --           D-D      01 Nov 22   - Titleblock refinements.                                   --
 --                                - Fixed three syntax errors.                                --
+--                                - Changed CLOCK_POL_RISING BOOLEAN GENERIC to               --
+--                                  CLOCK_POLARITY STD_LOGIC GENERIC. Removed CLOCK_POLARITY  --
+--                                  CONSTANT.                                                 --
+--                                - Adjusted valid depth check to accommodate multiples of 16.--
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
@@ -135,10 +137,10 @@
 
 ENTITY srlce IS
 GENERIC (
-         CLOCK_POL_RISING : BOOLEAN := TRUE;
-         SRLDEPTH         : INTEGER := 16;
-         SRLTYPE          : STRING  := "srl";
-         SRLINIT          : STRING  := "0000"
+         CLOCK_POLARITY : STD_LOGIC := '1';
+         SRLDEPTH       : INTEGER := 16;
+         SRLTYPE        : STRING  := "srl";
+         SRLINIT        : STRING  := "0000"
         );
 PORT    (
          i_clock        : IN  STD_LOGIC;
@@ -154,7 +156,6 @@ ARCHITECTURE dynamic OF srlce IS
   ---------------
   -- CONSTANTS --
   ---------------
-  CONSTANT CLOCK_POLARITY : STD_LOGIC := boolean_to_std_logic(CLOCK_POL_RISING);
   -------------
   -- SIGNALS --
   -------------
@@ -175,15 +176,15 @@ BEGIN
   -----------------------
   -- VALID DEPTH CHECK --
   -----------------------
-  ASSERT ((SRLDEPTH = 16) OR (SRLDEPTH = 32))
-  REPORT "INVALID SRL DEPTH"
+  ASSERT ((SRLDEPTH MOD 16)=0)
+  REPORT "SRL DEPTH NOT A MULTIPLE OF 16"
   SEVERITY FAILURE;
   ---------------------------
   -- VALID SRL STYLE CHECK --
   ---------------------------
   ASSERT ((SRLTYPE = "srl") OR (SRLTYPE = "reg_srl_reg") OR
           (SRLTYPE = "reg_srl") OR (SRLTYPE = "srl_reg"))
-  REPORT "INVALID SRL STYLE"
+  REPORT "UNSUPPORTED SRL STYLE"
   SEVERITY FAILURE;
   ----------------------
   -- SHIFT TAP OUTPUT --
