@@ -94,6 +94,7 @@
 --                                                                                            --
 --           D-D     01 Nov 22    - Titleblock refinements.                                   --
 --                                - Minor edit(s) to comments.                                --
+--                                - Adjustments to accommodate revised srle COMPONENT.        --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
@@ -129,10 +130,10 @@ ARCHITECTURE dynamic OF pre_scaler_srle_based IS
   ------------------------------
   COMPONENT srle IS
   GENERIC (
-           CLOCK_POL_RISING : BOOLEAN := TRUE;
-           SRLDEPTH         : INTEGER := 16;
-           SRLTYPE          : STRING  := "srl";
-           SRLINIT          : STRING  := "0000"
+           CLOCK_POLARITY : STD_LOGIC := '1';
+           SRLDEPTH       : INTEGER := 16;
+           SRLTYPE        : STRING  := "srl";
+           SRLINIT        : STRING  := "0000"
           );
   PORT    (
            i_clock        : IN  STD_LOGIC;
@@ -212,10 +213,10 @@ BEGIN
   -- PRE-SCALE DIVIDER SRL BASED SHIFT REGISTER --
   ------------------------------------------------
   PRESCALEGEN: srle GENERIC MAP (
-                                 CLOCK_POL_RISING => TRUE,
-                                 SRLDEPTH         => PRE_SCALE_SRL_DEPTH,
-                                 SRLTYPE          => "srl",
-                                 SRLINIT          => PRE_SCALE_SRL_INIT
+                                 CLOCK_POLARITY => '1',
+                                 SRLDEPTH       => PRE_SCALE_SRL_DEPTH,
+                                 SRLTYPE        => "srl",
+                                 SRLINIT        => PRE_SCALE_SRL_INIT
                                 )
                        PORT MAP (
                                  i_clock        => i_clock,
