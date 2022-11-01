@@ -1,5 +1,6 @@
 ------------------------------------------------------------------------------------------------
---                                   WWW.DEADLINE-DESIGN.COM                                  --
+--                                        DEADLINE-DESIGN                                     --
+--                                    www.deadline-design.com                                 --
 ------------------------------------------------------------------------------------------------
 --                                                                                            --
 -- This software representation and its inclusive documentation are provided AS-IS and with   --
@@ -7,6 +8,8 @@
 -- warranties of merchantability or fitness for a particular purpose.                         --
 --                                                                                            --
 -- All trademarks are the property of their respective owners.                                --
+--                                                                                            --
+-- CONTACT      : support@deadline-design.com                                                 --
 --                                                                                            --
 -- DESIGN UNITS : gray_count_bit(ver1)                                                        --
 --                                                                                            --
@@ -18,9 +21,20 @@
 -- NOTE         : The design unit is based from a paper in Proceedings of the Student FEI     --
 --                2000, Brno 2000, "Gray counter in VHDL" by Ivo Viscor                       --
 --                                                                                            --
---                                     GENERIC DECLARATIONS                                   --
+-- LIMITATIONS  : Port signal name prefixes denote direction. As applicable:                  --
+--                'i_' for input, 'o_' for output, and 'io_' for bidirectional.               --
 --                                                                                            --
---                CLOCK_POL_RISING - Clock polarity rising (TRUE) or falling (FALSE).         --
+--                Port signal direction type BUFFER is avoided as some establishments frown   --
+--                upon its use.                                                               --
+--                                                                                            --
+--                The Z cascading can have impact on performance.                             --
+--                                                                                            --
+-- ERRORS       : No known errors.                                                            --
+--                                                                                            --
+-- GENERIC                                                                                    --
+-- DECLARATIONS :                                                                             --
+--                                                                                            --
+--                CLOCK_POLARITY   - Selector '1'(RISING)/'0'(FALLING) for clock polarity.    --
 --                                                                                            --
 --                BIT_IS_LSb       - Gray counter bit is LSb. Used to support the LSb being   --
 --                                   reset to '1' as opposed to '0' for all other bits and    --
@@ -30,25 +44,22 @@
 --                BIT_IS_MSb       - Gray counter bit is MSb. Used to support the MSb being   --
 --                                   fed back and OR'd with the adjacent lower count bit.     --
 --                                                                                            --
---                                      PORT DECLARATIONS                                     --
+-- PORT                                                                                       --
+-- DECLARATIONS :                                                                             --
 --                                                                                            --
---                i_reset        - (Synchronous) reset input.                                 --
+--                i_reset        - (Synchronous) reset.                                       --
 --                                                                                            --
---                i_clock        - Clock input.                                               --
+--                i_clock        - Clock.                                                     --
 --                                                                                            --
---                i_count_enable - Count enable input.                                        --
+--                i_count_enable - Count enable.                                              --
 --                                                                                            --
---                i_q            - Q from adjacent lower bit input.                           --
+--                i_q            - Q from adjacent lower bit.                                 --
 --                                                                                            --
---                i_z            - Z from adjacent lower bit input.                           --
+--                i_z            - Z from adjacent lower bit.                                 --
 --                                                                                            --
---                o_q            - Q (gray count) output (when not LSb).                      --
+--                o_q            - Q (gray count) (when not LSb).                             --
 --                                                                                            --
---                o_z            - Cascade Z output.                                          --
---                                                                                            --
--- LIMITATIONS  : The Z cascading can have impact on performance.                             --
---                                                                                            --
--- ERRORS       : No known errors.                                                            --
+--                o_z            - Cascade Z.                                                 --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
@@ -58,6 +69,11 @@
 --                                                                                            --
 -- VERSION  AUTHOR     DATE       COMMENTS                                                    --
 --   0.0     D-D     09 Feb 22    - Created.                                                  --
+--                                                                                            --
+--           D-D     01 Nov 22    - Titleblock refinements.                                   --
+--                                - Changed CLOCK_POL_RISING BOOLEAN GENERIC to               --
+--                                  CLOCK_POLARITY STD_LOGIC GENERIC. Removed CLOCK_POLARITY  --
+--                                  CONSTANT.                                                 --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
@@ -77,9 +93,9 @@
 ------------------------------------------------------------------------------------------------
 ENTITY gray_count_bit IS
 GENERIC (
-         CLOCK_POL_RISING : BOOLEAN := TRUE;
-         BIT_IS_LSb       : BOOLEAN := TRUE;
-         BIT_IS_MSb       : BOOLEAN := FALSE
+         CLOCK_POLARITY : STD_LOGIC := '1';
+         BIT_IS_LSb     : BOOLEAN := TRUE;
+         BIT_IS_MSb     : BOOLEAN := FALSE
         );
 PORT    (
          i_reset        : IN  STD_LOGIC;
@@ -96,7 +112,6 @@ ARCHITECTURE ver1 OF gray_count_bit IS
   ---------------
   -- CONSTANTS --
   ---------------
-  CONSTANT CLOCK_POLARITY : STD_LOGIC := boolean_to_std_logic(CLOCK_POL_RISING);
   CONSTANT RESET_VALUE    : STD_LOGIC := boolean_to_std_logic(BIT_IS_LSb);
   -------------
   -- SIGNALS --
