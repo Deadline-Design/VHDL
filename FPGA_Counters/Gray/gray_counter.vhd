@@ -1,5 +1,6 @@
 ------------------------------------------------------------------------------------------------
---                                   WWW.DEADLINE-DESIGN.COM                                  --
+--                                        DEADLINE-DESIGN                                     --
+--                                    www.deadline-design.com                                 --
 ------------------------------------------------------------------------------------------------
 --                                                                                            --
 -- This software representation and its inclusive documentation are provided AS-IS and with   --
@@ -8,6 +9,8 @@
 --                                                                                            --
 -- All trademarks are the property of their respective owners.                                --
 --                                                                                            --
+-- CONTACT      : support@deadline-design.com                                                 --
+--                                                                                            --
 -- DESIGN UNITS : gray_counter(ver1)                                                          --
 --                                                                                            --
 -- FILE NAME    : gray_counter.vhd                                                            --
@@ -15,7 +18,13 @@
 -- PURPOSE      : The purpose of this design unit is to provide a gray counter that supports  --
 --                GENERIC selectable counter WIDTH.                                           --
 --                                                                                            --
--- NOTE         :  The design unit is based from a paper in Proceedings of the Student FEI    --
+-- NOTE         : Port signal name prefixes denote direction. As applicable:                  --
+--                'i_' for input, 'o_' for output, and 'io_' for bidirectional.               --
+--                                                                                            --
+--                Port signal direction type BUFFER is avoided as some establishments frown   --
+--                upon its use.                                                               --
+--                                                                                            --
+--                The design unit is based from a paper in Proceedings of the Student FEI     --
 --                2000, Brno 2000, "Gray counter in VHDL" by Ivo Viscor                       --
 --                                                                                            --
 --                This design unit does utilize certain elements contained within the         --
@@ -28,27 +37,29 @@
 --                DEADLINE LIBRARY prior to compiling this design unit into the               --
 --                DEADLINE LIBRARY.                                                           --
 --                                                                                            --
---                                     GENERIC DECLARATIONS                                   --
---                                                                                            --
---                CLOCK_POL_RISING - Clock polarity rising (TRUE) or falling (FALSE).         --
---                                                                                            --
---                WIDTH            - Gray counter width.                                      --
---                                                                                            --
---                                      PORT DECLARATIONS                                     --
---                                                                                            --
---                i_reset        - (Synchronous) reset input.                                 --
---                                                                                            --
---                i_clock        - Clock input.                                               --
---                                                                                            --
---                i_count_enable - Count enable input.                                        --
---                                                                                            --
---                o_gray_count   - Gray counter count output.                                 --
---                                                                                            --
 -- LIMITATIONS  : Minimum GENERIC WIDTH supported is 2.                                       --
 --                                                                                            --
 --                The Z cascading can have impact on performance.                             --
 --                                                                                            --
 -- ERRORS       : No known errors.                                                            --
+--                                                                                            --
+-- GENERIC                                                                                    --
+-- DECLARATIONS :                                                                             --
+--                                                                                            --
+--                CLOCK_POLARITY   - Selector '1'(RISING)/'0'(FALLING) for clock polarity.    --
+--                                                                                            --
+--                WIDTH            - Gray counter width.                                      --
+--                                                                                            --
+-- PORT                                                                                       --
+-- DECLARATIONS :                                                                             --
+--                                                                                            --
+--                i_reset        - (Synchronous) reset.                                       --
+--                                                                                            --
+--                i_clock        - Clock.                                                     --
+--                                                                                            --
+--                i_count_enable - Count enable.                                              --
+--                                                                                            --
+--                o_gray_count   - Gray counter count.                                        --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
@@ -58,6 +69,13 @@
 --                                                                                            --
 -- VERSION  AUTHOR     DATE       COMMENTS                                                    --
 --   0.0     D-D     09 Feb 22    - Created.                                                  --
+--                                                                                            --
+--           D-D     01 Nov 22    - Titleblock refinements.                                   --
+--                                - Adjustments to accommodate revised gray_count_bit         --
+--                                  COMPONENT.                                                --
+--                                - Changed CLOCK_POL_RISING BOOLEAN GENERIC to               --
+--                                  CLOCK_POLARITY STD_LOGIC GENERIC. Removed CLOCK_POLARITY  --
+--                                  CONSTANT.                                                 --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
@@ -78,8 +96,8 @@
 
 ENTITY gray_counter IS
 GENERIC (
-         CLOCK_POL_RISING : BOOLEAN := TRUE;
-         WIDTH            : INTEGER := 2
+         CLOCK_POLARITY : STD_LOGIC := '1';
+         WIDTH          : INTEGER := 2
         );
 PORT    (
          i_reset        : IN  STD_LOGIC;
@@ -95,9 +113,9 @@ ARCHITECTURE ver1 OF gray_counter IS
   ------------------------------
   COMPONENT gray_count_bit IS
   GENERIC (
-           CLOCK_POL_RISING : BOOLEAN := TRUE;
-           BIT_IS_LSb       : BOOLEAN := TRUE;
-           BIT_IS_MSb       : BOOLEAN := FALSE
+           CLOCK_POLARITY : STD_LOGIC := '1';
+           BIT_IS_LSb     : BOOLEAN := TRUE;
+           BIT_IS_MSb     : BOOLEAN := FALSE
           );
   PORT    (
            i_reset        : IN  STD_LOGIC;
@@ -112,7 +130,6 @@ ARCHITECTURE ver1 OF gray_counter IS
   ---------------
   -- CONSTANTS --
   ---------------
-  CONSTANT CLOCK_POLARITY : STD_LOGIC := boolean_to_std_logic(CLOCK_POL_RISING);
   -------------
   -- SIGNALS --
   -------------
@@ -136,9 +153,9 @@ BEGIN
   -- TOGGLE FLIP FLOP (NOT USED AS ACTUAL PART OF GRAY COUNT OUTPUT) --
   ---------------------------------------------------------------------
   GRAYCNTTOGGLR: gray_count_bit GENERIC MAP (
-                                             CLOCK_POL_RISING => TRUE,
-                                             BIT_IS_LSb       => TRUE,
-                                             BIT_IS_MSb       => FALSE
+                                             CLOCK_POLARITY => CLOCK_POLARITY,
+                                             BIT_IS_LSb     => TRUE,
+                                             BIT_IS_MSb     => FALSE
                                             )
                                    PORT MAP (
                                              i_reset        => i_reset,
@@ -154,9 +171,9 @@ BEGIN
   ------------------
   GRAYCNTR: FOR index IN 1 TO (WIDTH-1) GENERATE
   GRAYCNTRi:   gray_count_bit GENERIC MAP (
-                                           CLOCK_POL_RISING => TRUE,
-                                           BIT_IS_LSb       => FALSE,
-                                           BIT_IS_MSb       => FALSE
+                                           CLOCK_POLARITY => CLOCK_POLARITY,
+                                           BIT_IS_LSb     => FALSE,
+                                           BIT_IS_MSb     => FALSE
                                           )
                                  PORT MAP (
                                            i_reset        => i_reset,
@@ -169,9 +186,9 @@ BEGIN
                                           );
             END GENERATE;
   GRAYCNTRMSb: gray_count_bit GENERIC MAP (
-                                           CLOCK_POL_RISING => TRUE,
-                                           BIT_IS_LSb       => FALSE,
-                                           BIT_IS_MSb       => TRUE
+                                           CLOCK_POLARITY => CLOCK_POLARITY,
+                                           BIT_IS_LSb     => FALSE,
+                                           BIT_IS_MSb     => TRUE
                                           )
                                  PORT MAP (
                                            i_reset        => i_reset,
