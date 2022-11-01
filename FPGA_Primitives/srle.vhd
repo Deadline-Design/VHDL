@@ -1,5 +1,6 @@
 ------------------------------------------------------------------------------------------------
---                                   WWW.DEADLINE-DESIGN.COM                                  --
+--                                        DEADLINE-DESIGN                                     --
+--                                    www.deadline-design.com                                 --
 ------------------------------------------------------------------------------------------------
 --                                                                                            --
 -- This software representation and its inclusive documentation are provided AS-IS and with   --
@@ -8,6 +9,8 @@
 --                                                                                            --
 -- All trademarks are the property of their respective owners.                                --
 --                                                                                            --
+-- CONTACT      : support@deadline-design.com                                                 --
+--                                                                                            --
 -- DESIGN UNITS : srle(dynamic)                                                               --
 --                                                                                            --
 -- FILE NAME    : srle.vhd                                                                    --
@@ -15,7 +18,13 @@
 -- PURPOSE      : The purpose of this design unit is to provide a generic depth and clock     --
 --                edge definable LUT based shift register primitive that is inferred.         --
 --                                                                                            --
--- NOTE         : LUT based shift register primitives can be found in various Xilinx FPGA     --
+-- NOTE         : Port signal name prefixes denote direction. As applicable:                  --
+--                'i_' for input, 'o_' for output, and 'io_' for bidirectional.               --
+--                                                                                            --
+--                Port signal direction type BUFFER is avoided as some establishments frown   --
+--                upon its use.                                                               --
+--                                                                                            --
+--                LUT based shift register primitives can be found in various Xilinx FPGA     --
 --                families.                                                                   --
 --                                                                                            --
 --                LUT based shift registers shift in LSb first.                               --
@@ -27,28 +36,6 @@
 --                D_D_pkg PACKAGE (D_D_pkg.vhd). Be sure to compile the package into the      --
 --                DEADLINE LIBRARY prior to compiling this design unit into the DEADLINE      --
 --                LIBRARY.                                                                    --
---                                                                                            --
---                                     GENERIC DECLARATIONS                                   --
---                                                                                            --
---                CLOCK_POL_RISING - Clock polarity rising (TRUE) or falling (FALSE).         --
---                                                                                            --
---                SRLDEPTH         - SRL (maximum) depth. 16 or 32 supported.                 --
---                                                                                            --
---                SRLTYPE          - SRL arrangement. SRL, REG->SRL, SRL->REG, REG->SRL->REG. --
---                                                                                            --
---                SRLINIT          - (hex) string of values to initialize SRL with.           --
---                                                                                            --
---                                      PORT DECLARATIONS                                     --
---                                                                                            --
---                i_clock        - Global clock input.                                        --
---                                                                                            --
---                i_clock_enable - Clock enable/shift enable input.                           --
---                                                                                            --
---                i_tap_sel      - Data output tap select input.                              --
---                                                                                            --
---                i_data         - Data input.                                                --
---                                                                                            --
---                o_data         - Data output.                                               --
 --                                                                                            --
 -- LIMITATIONS  : Current SRLE primitives supported are SRL16E and SRL32E.                    --
 --                                                                                            --
@@ -65,6 +52,30 @@
 --                this is application dependent and so not provided within this design unit.  --
 --                                                                                            --
 -- ERRORS       : No known errors.                                                            --
+--                                                                                            --
+-- GENERIC                                                                                    --
+-- DECLARATIONS :                                                                             --
+--                                                                                            --
+--                CLOCK_POL_RISING - Clock polarity rising (TRUE) or falling (FALSE).         --
+--                                                                                            --
+--                SRLDEPTH         - SRL (maximum) depth. 16 or 32 supported.                 --
+--                                                                                            --
+--                SRLTYPE          - SRL arrangement. SRL, REG->SRL, SRL->REG, REG->SRL->REG. --
+--                                                                                            --
+--                SRLINIT          - (hex) string of values to initialize SRL with.           --
+--                                                                                            --
+-- PORT                                                                                       --
+-- DECLARATIONS :                                                                             --
+--                                                                                            --
+--                i_clock        - Global clock.                                              --
+--                                                                                            --
+--                i_clock_enable - Clock enable/shift enable.                                 --
+--                                                                                            --
+--                i_tap_sel      - Data output tap select.                                    --
+--                                                                                            --
+--                i_data         - Data in.                                                   --
+--                                                                                            --
+--                o_data         - Data out.                                                  --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
@@ -90,6 +101,8 @@
 --                                                                                            --
 --           D-D      08 Feb 22   - Corrected valid init string size check REPORT, X 4 should --
 --                                  be on the init string.                                    --
+--                                                                                            --
+--           D-D      01 Nov 22   - Titleblock refinements.                                   --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
