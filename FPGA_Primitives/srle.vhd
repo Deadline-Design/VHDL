@@ -56,7 +56,7 @@
 -- GENERIC                                                                                    --
 -- DECLARATIONS :                                                                             --
 --                                                                                            --
---                CLOCK_POL_RISING - Clock polarity rising (TRUE) or falling (FALSE).         --
+--                CLOCK_POLARITY   - Selector '1'(RISING)/'0'(FALLING) for clock polarity.    --
 --                                                                                            --
 --                SRLDEPTH         - SRL (maximum) depth. 16 or 32 supported.                 --
 --                                                                                            --
@@ -103,6 +103,9 @@
 --                                  be on the init string.                                    --
 --                                                                                            --
 --           D-D      01 Nov 22   - Titleblock refinements.                                   --
+--                                - Changed CLOCK_POL_RISING BOOLEAN GENERIC to               --
+--                                  CLOCK_POLARITY STD_LOGIC GENERIC. Removed CLOCK_POLARITY  --
+--                                  CONSTANT.                                                 --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
@@ -125,10 +128,10 @@
 
 ENTITY srle IS
 GENERIC (
-         CLOCK_POL_RISING : BOOLEAN := TRUE;
-         SRLDEPTH         : INTEGER := 16;
-         SRLTYPE          : STRING  := "srl";
-         SRLINIT          : STRING  := "0000"
+         CLOCK_POLARITY : STD_LOGIC := '1';
+         SRLDEPTH       : INTEGER := 16;
+         SRLTYPE        : STRING  := "srl";
+         SRLINIT        : STRING  := "0000"
         );
 PORT    (
          i_clock        : IN  STD_LOGIC;
@@ -143,7 +146,6 @@ ARCHITECTURE dynamic OF srle IS
   ---------------
   -- CONSTANTS --
   ---------------
-  CONSTANT CLOCK_POLARITY : STD_LOGIC := boolean_to_std_logic(CLOCK_POL_RISING);
   -------------
   -- SIGNALS --
   -------------
@@ -172,7 +174,7 @@ BEGIN
   ---------------------------
   ASSERT ((SRLTYPE = "srl") OR (SRLTYPE = "reg_srl_reg") OR
           (SRLTYPE = "reg_srl") OR (SRLTYPE = "srl_reg"))
-  REPORT "INVALID SRL STYLE"
+  REPORT "UNSUPPORTED SRL STYLE"
   SEVERITY FAILURE;
   ----------------------
   -- SHIFT TAP OUTPUT --
