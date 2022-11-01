@@ -1,5 +1,6 @@
 ------------------------------------------------------------------------------------------------
---                                   WWW.DEADLINE-DESIGN.COM                                  --
+--                                        DEADLINE-DESIGN                                     --
+--                                    www.deadline-design.com                                 --
 ------------------------------------------------------------------------------------------------
 --                                                                                            --
 -- This software representation and its inclusive documentation are provided AS-IS and with   --
@@ -7,6 +8,8 @@
 -- warranties of merchantability or fitness for a particular purpose.                         --
 --                                                                                            --
 -- All trademarks are the property of their respective owners.                                --
+--                                                                                            --
+-- CONTACT      : support@deadline-design.com                                                 --
 --                                                                                            --
 -- DESIGN UNITS : pre_scaler_srle_based_TSTR(testbench1)                                      --
 --                                                                                            --
@@ -29,9 +32,15 @@
 --                DEADLINE LIBRARY prior to compiling this testbench into the                 --
 --                DEADLINE LIBRARY.                                                           --
 --                                                                                            --
--- LIMITATIONS    : N/A.                                                                      --
+-- LIMITATIONS  : N/A.                                                                        --
 --                                                                                            --
--- ERRORS         : No known errors.                                                          --
+-- ERRORS       : No known errors.                                                            --
+--                                                                                            --
+-- GENERIC                                                                                    --
+-- DECLARATIONS : N/A.                                                                        --
+--                                                                                            --
+-- PORT                                                                                       --
+-- DECLARATIONS : N/A.                                                                        --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
@@ -50,6 +59,8 @@
 --                                                                                            --
 --           D-D     08 Feb 22    - Removed extra space character outside of right -- in      --
 --                                  titleblock.                                               --
+--                                                                                            --
+--           D-D     01 Nov 22    - Titleblock refinements.                                   --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------

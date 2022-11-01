@@ -1,5 +1,6 @@
 ------------------------------------------------------------------------------------------------
---                                   WWW.DEADLINE-DESIGN.COM                                  --
+--                                        DEADLINE-DESIGN                                     --
+--                                    www.deadline-design.com                                 --
 ------------------------------------------------------------------------------------------------
 --                                                                                            --
 -- This software representation and its inclusive documentation are provided AS-IS and with   --
@@ -7,6 +8,8 @@
 -- warranties of merchantability or fitness for a particular purpose.                         --
 --                                                                                            --
 -- All trademarks are the property of their respective owners.                                --
+--                                                                                            --
+-- CONTACT      : support@deadline-design.com                                                 --
 --                                                                                            --
 -- DESIGN UNITS : pre_scaler_srle_based(dynamic)                                              --
 --                                                                                            --
@@ -17,7 +20,13 @@
 --                Every attempt is made at inferring functionality as opposed to              --
 --                instantiating functionality to permit easier portability.                   --
 --                                                                                            --
--- NOTE         : This design unit utilizes the LUT based shift register primitive where      --
+-- NOTE         : Port signal name prefixes denote direction. As applicable:                  --
+--                'i_' for input, 'o_' for output, and 'io_' for bidirectional.               --
+--                                                                                            --
+--                Port signal direction type BUFFER is avoided as some establishments frown   --
+--                upon its use.                                                               --
+--                                                                                            --
+--                This design unit utilizes the LUT based shift register primitive where      --
 --                possible for a more efficient footprint. The primitive can be found in      --
 --                various Xilinx FPGA families.                                               --
 --                                                                                            --
@@ -30,41 +39,43 @@
 --                Be sure to compile the primitive into the DEADLINE LIBRARY prior to         --
 --                compiling this design unit into the DEADLINE LIBRARY.                       --
 --                                                                                            --
---                                     GENERIC DECLARATIONS                                   --
+-- LIMITATIONS  : The SRL LUT shift register is permanently clock enabled. This permits a     --
+--                simpler meachanism for flushing when the pre-scaler module is disabled.     --
+--                                                                                            --
+--                In order to properly flush the SRL based shift registers, i_enable must     --
+--                be de-asserted for no less thant pre_scale_srl_depth + 1 clock cycles.      --
+--                                                                                            --
+--                If i_pre_scale_div is utilized(adjusted) dynamically, be sure to first      --
+--                flush the SRL LUT shift register using i_enable, prior to making the        --
+--                change and re-asserting i_enable.                                           --
+--                                                                                            --
+--                Ensure that the PRE_SCALE_SRL_DEPTH GENERIC value is a multiple of 16 so    --
+--                that it is compatible with SRL LUT based shift register depths.             --
+--                                                                                            --
+-- ERRORS       : No known errors.                                                            --
+--                                                                                            --
+-- GENERIC                                                                                    --
+-- DECLARATIONS :                                                                             --
 --                                                                                            --
 --                  PRE_SCALE_SRL_DEPTH - Pre-scale divider LUT based SRL depth.              --
 --                                        Ideally this should be 16 or 32 to permit single    --
 --                                        primitive instantion. However a multiple of 16      --
 --                                        that is greater than 32 is possible.                --
 --                                                                                            --
---                                      PORT DECLARATIONS                                     --
+-- PORT                                                                                       --
+-- DECLARATIONS :                                                                             --
 --                                                                                            --
---                  i_clock               - Global clock input.                               --
+--                  i_clock               - Global clock.                                     --
 --                                                                                            --
---                  i_enable              - Pre-scaler module enable input.                   --
+--                  i_enable              - Pre-scaler module enable.                         --
 --                                                                                            --
---                  i_pre_scale_div       - Pre-scale divide clock enable tick rate input.    --
+--                  i_pre_scale_div       - Pre-scale divide clock enable tick rate.          --
 --                                          The divide rate is i_pre_scale_div + 1.           --
 --                                          It may be set statically, or can be dynamic       --
 --                                          (so long as it is properly flushed prior to the   --
 --                                          dynamic change.                                   --
 --                                                                                            --
---                  o_pre_scale_rate_tick - Pre-scale divided clock enable tick output.       --
---                                                                                            --
--- LIMITATIONS    : The SRL LUT shift register is permanently clock enabled. This permits a   --
---                  simpler meachanism for flushing when the pre-scaler module is disabled.   --
---                                                                                            --
---                  In order to properly flush the SRL based shift registers, i_enable must   --
---                  be de-asserted for no less thant pre_scale_srl_depth + 1 clock cycles.    --
---                                                                                            --
---                  If i_pre_scale_div is utilized(adjusted) dynamically, be sure to first    --
---                  flush the SRL LUT shift register using i_enable, prior to making the      --
---                  change and re-asserting i_enable.                                         --
---                                                                                            --
---                  Ensure that the PRE_SCALE_SRL_DEPTH GENERIC value is a multiple of 16 so  --
---                  that it is compatible with SRL LUT based shift register depths.           --
---                                                                                            --
--- ERRORS         : No known errors.                                                          --
+--                  o_pre_scale_rate_tick - Pre-scale divided clock enable tick.              --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
@@ -80,6 +91,9 @@
 --           D-D     04 Feb 22    - Changed PRE_SCALE_SRL_INIT GENERIC to a local CONSTANT.   --
 --                                                                                            --
 --           D-D     08 Feb 22    - Corrected typo in titleblock.                             --
+--                                                                                            --
+--           D-D     01 Nov 22    - Titleblock refinements.                                   --
+--                                - Minor edit(s) to comments.                                --
 --                                                                                            --
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
@@ -146,9 +160,10 @@ BEGIN
 --                                PRE-SCALER RATE GENERATION                                  --
 ------------------------------------------------------------------------------------------------
 --                                                                                            --
--- i_enable when de-asserted should be de-asserted for a minimum of clocks equal to the       --
--- pre_scale_srl_depth + 1 to ensure proper flushing. When asserted, the pre-scaler is active --
--- and output clock enable ticks are generated at the divide rate of the input clock.         --
+-- i_enable when de-asserted should be de-asserted for a minimum number of clocks equal to    --
+-- the pre_scale_srl_depth + 1 to ensure proper flushing. This also effectively resets the    --
+-- pre-scaler. When asserted, the pre-scaler is active and output clock enable ticks are      --
+-- generated at the divide rate of the input clock.                                           --
 --                                                                                            --
 -- i_pre_scale_div is the clock divider value. Specifically the divider rate is equal to      --
 -- i_pre_scale_div + 1. If i_pre_scale_div is to be utilized dynamically, it is important to  --
